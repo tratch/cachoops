@@ -1,0 +1,16 @@
+#leagueSelection
+
+h4 Select League
+select#leagueSelect
+    each league in leagues
+      option(value=league.league_type,selected= leagueType == league.league_type)= league.name
+
+h4 Select Players
+#playerSelection
+  select#leftSelect
+    each player in players
+      option(value=player.player_id,selected= leftPlayerId == player.player_id)= player.player_name
+
+  select#rightSelect
+    each player in players
+      option(value=player.player_id,selected= rightPlayerId == player.player_id)= player.player_name

@@ -1,0 +1,54 @@
+!!!5
+html
+  head
+    title CAC Player Graph
+    meta(charset='utf=8')
+    link(rel='stylesheet' href='stylesheets/style.css')
+    link(rel='stylesheet' href='stylesheets/bootstrap.min.css')
+    script
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-43480091-1']);
+      _gaq.push(['_trackPageview']);
+ 
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    script(type='text/javascript' src='javascripts/jquery-2.0.3.min.js')
+    script(type='text/javascript' src="javascripts/d3.v2.min.js" charset="utf-8")
+    script(type='text/javascript' src='javascripts/bootstrap.min.js')
+    script(type='text/javascript')
+      var data =!{JSON.stringify(graph)};
+
+  body
+    .container
+      h1  CAC Common League Graph
+      p.
+        This graph visualizes how often two players play in the same league. 
+        The darker cell, the more two players have played in the same league.    
+      p
+        | The d3 visualization code and inspiration for creating this came from <a href="http://bost.ocks.org/mike/miserables/">Les Misérables Co-occurrence</a>
+      p 
+        | Data Source : 
+        a(href='https://docs.google.com/spreadsheet/ccc?key=0AjZb9WMvaturdEJzRW9TSGJFRXhxbDI1NmN6SU9vaWc&usp=sharing') BDraft Stats
+
+      p.
+        Made with node.js, express, jade, jQuery, d3, and stylus.
+      p
+        a(href="https://twitter.com/tjratch" class="twitter-follow-button" data-show-count="false") Follow @tjratch
+        script
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+      
+
+      div
+        h4 Sort    
+          select#order
+            option(value="name" selected="selected") by Name
+            option(value="count") by Frequency
+
+      
+
+  
+    script(type='text/javascript' src='javascripts/playedtogether.js')
