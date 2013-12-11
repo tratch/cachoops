@@ -1,14 +1,14 @@
- var express = require('express');
- var routes = require('./routes');
- var pyramid = require('./models/pyramid');
- var http = require('http');
- var path = require('path');
- var stylus = require('stylus')
- var nib = require('nib')
+ var express = require('express'),
+ app = express();
 
- var app = express();
- var d3 = require("d3");
- var port = parseInt(process.argv[2]);
+ var routes = require('./routes'),
+  pyramid = require('./models/pyramid'),
+  http = require('http'),
+  path = require('path'),
+  stylus = require('stylus'),
+  nib = require('nib'),
+  d3 = require("d3"),
+  port = parseInt(process.argv[2]);
 
 
 // all environments
@@ -26,8 +26,8 @@ app.use(stylus.middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, '/public')));
 
 var pg = require('pg');
-var conString = "postgres://tratch:postgres@localhost:5432/hoops";
-var DB_NAME = "matchupstats";
+var conString = "postgres://tratch:postgres@192.168.1.200:5432/hoops";
+var DB_NAME = "matchupstatswithpr";
 var LEAGE_DB_NAME = "matchupleagues";
 
 
@@ -46,33 +46,27 @@ app.get('/', function (req, res) {
 			var leftPlayerId = playerList[Math.floor((Math.random()*playerList.length))].player_id;
 			var rightPlayerId = playerList[Math.floor((Math.random()*playerList.length))].player_id;
 			
-			client.query('select * from '+DB_NAME
- 			+' where player_id = $1'
- 			+' and league_type = $2'
- 				,[leftPlayerId,leagueType], 
- 			function(err, result) {
- 				var leftPlayerStats = result.rows[0];
- 				client.query('select * from '+DB_NAME
- 				+' where player_id = $1'
- 				+' and league_type = $2',
- 				[rightPlayerId,leagueType], 
- 				function(err, result) {
- 					var rightPlayerStats = result.rows[0];
- 					var data = new pyramid(leftPlayerStats,rightPlayerStats);
- 					res.render('index',{ 
-							title : 'CAC Player Comparison',
-							players : playerList,
-							leagues : leagueList,
-							leagueType : leagueType,
-							leftPlayerId : leftPlayerId,
-							rightPlayerId : rightPlayerId,
-							stats: data
-					});
-					client.end();
- 				});
-			});
+			client.query('select * from ' + DB_NAME + ' where player_id = $1' + ' and league_type = $2', [leftPlayerId, leagueType],
+				function(err, result) {
+					var leftPlayerStats = result.rows[0];
+					client.query('select * from ' + DB_NAME + ' where player_id = $1' + ' and league_type = $2', [rightPlayerId, leagueType],
+						function(err, result) {
+							var rightPlayerStats = result.rows[0];
+							var data = new pyramid(leftPlayerStats, rightPlayerStats);
+							res.render('index', {
+								title: 'CAC Player Comparison',
+								players: playerList,
+								leagues: leagueList,
+								leagueType: leagueType,
+								leftPlayerId: leftPlayerId,
+								rightPlayerId: rightPlayerId,
+								stats: data
+							});
+							client.end();
+						});
+				});
 		});
-	});
+});
 });
 
 app.get('/league', function (req, res) {
@@ -114,22 +108,24 @@ app.get('/league', function (req, res) {
 	});
 });
 
- app.get('/stats', function (req, res) {
+ app.get('/stats', function(req, res) {
  	var leagueType = req.query.leagueType;
-	var leftPlayerId = parseInt(req.query.left);
-	var rightPlayerId = parseInt(req.query.right);
-	var client = new pg.Client(conString);
-	client.connect();
- 	client.query('select * from '+DB_NAME +' where player_id = '+leftPlayerId+' and league_type ='+leagueType, function(err, result) {
- 			var leftPlayerStats = result.rows[0];
- 			client.query('select * from '+DB_NAME +' where player_id = '+rightPlayerId+' and league_type ='+leagueType, function(err, result) {
- 					var rightPlayerStats = result.rows[0];
- 					var data = new pyramid(leftPlayerStats,rightPlayerStats);
- 					res.send({stats: data});
- 					client.end();
+ 	var leftPlayerId = parseInt(req.query.left);
+ 	var rightPlayerId = parseInt(req.query.right);
+ 	var client = new pg.Client(conString);
+ 	client.connect();
+ 	client.query('select * from ' + DB_NAME + ' where player_id = ' + leftPlayerId + ' and league_type =' + leagueType, function(err, result) {
+ 		var leftPlayerStats = result.rows[0];
+ 		client.query('select * from ' + DB_NAME + ' where player_id = ' + rightPlayerId + ' and league_type =' + leagueType, function(err, result) {
+ 			var rightPlayerStats = result.rows[0];
+ 			var data = new pyramid(leftPlayerStats, rightPlayerStats);
+ 			res.send({
+ 				stats: data
  			});
-	});
-});
+ 			client.end();
+ 		});
+ 	});
+ });
 
  app.get('/adraft', function (req, res) {
  	var client = new pg.Client(conString);
