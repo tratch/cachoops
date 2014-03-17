@@ -1,0 +1,21 @@
+application: cachoopsplayermatchup
+version: 2
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /javascripts
+  static_dir: javascripts
+
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /.*
+  script: playermatchup.application
+
+libraries:
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
